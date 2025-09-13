@@ -20,18 +20,18 @@ function App() {
       try {
         setError(null)
         const response = await fetch("http://localhost:5000/api/weather")
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch weather data')
         }
-        
+
         const data = await response.json()
         setWeatherData(data)
         console.log(data)
       } catch (err) {
         console.error("Error fetching weather data:", err)
         setError(err.message)
-        
+
         // Use mock data for development/demo
         setWeatherData({
           city: 'Ahmedabad',
@@ -90,7 +90,7 @@ function App() {
           <div className="text-center text-white">
             <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong</h2>
             <p className="mb-6">{error}</p>
-            <button 
+            <button
               onClick={handleRefresh}
               className="px-6 py-3 bg-white/20 backdrop-blur-lg rounded-lg border border-white/30 hover:bg-white/30 transition-colors"
             >

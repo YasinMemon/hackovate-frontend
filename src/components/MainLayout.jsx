@@ -50,7 +50,7 @@ function MainLayout({ children }) {
 
     return (
         <motion.div
-            className='p-4 px-10 min-w-screen min-h-screen relative overflow-hidden'
+            className='px-10 min-w-screen min-h-screen relative'
             style={backgroundStyle}
             variants={containerVariants}
             initial="hidden"

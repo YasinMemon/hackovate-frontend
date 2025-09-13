@@ -1,7 +1,24 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-function SubCycleCard() {
+function SubCycleCard({ weatherData }) {
+    // Function to format time from 24-hour to 12-hour format
+    const formatTime = (timeString) => {
+        if (!timeString) return 'N/A'
+
+        try {
+            const [hours, minutes] = timeString.split(':')
+            const hour = parseInt(hours)
+            const ampm = hour >= 12 ? 'PM' : 'AM'
+            const displayHour = hour % 12 || 12
+            return `${displayHour}:${minutes} ${ampm}`
+        } catch (error) {
+            return timeString // Return original if parsing fails
+        }
+    }
+
+    const sunriseTime = formatTime(weatherData?.sunrise)
+    const sunsetTime = formatTime(weatherData?.sunset)
     const containerVariants = {
         hidden: { opacity: 0, x: 50, scale: 0.9 },
         visible: {
@@ -174,7 +191,7 @@ function SubCycleCard() {
                                 textShadow: "0 0 15px rgba(251, 191, 36, 0.6)"
                             }}
                         >
-                            6:12 AM
+                            {sunriseTime}
                         </motion.p>
                         <motion.p
                             className='text-yellow-300/80 text-sm font-medium'
@@ -232,7 +249,7 @@ function SubCycleCard() {
                                 textShadow: "0 0 15px rgba(249, 115, 22, 0.6)"
                             }}
                         >
-                            7:45 PM
+                            {sunsetTime}
                         </motion.p>
                         <motion.p
                             className='text-orange-300/80 text-sm font-medium'

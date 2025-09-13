@@ -2,11 +2,11 @@ import React from 'react'
 import AirQualityCard from './AirQualityCard'
 import SubCycleCards from './SubCycleCard'
 
-function RightSideCards() {
+function RightSideCards({ weatherData }) {
     return (
         <div className='w-full' >
-            <AirQualityCard />
-            <SubCycleCards />
+            <AirQualityCard weatherData={weatherData} />
+            <SubCycleCards weatherData={weatherData} />
         </div>
     )
 }

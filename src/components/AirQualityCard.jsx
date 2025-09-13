@@ -1,7 +1,65 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-function AirQualityCard() {
+function AirQualityCard({ weatherData }) {
+    // Function to get AQI level and color based on value
+    const getAQIInfo = (aqi) => {
+        if (!aqi || aqi === 'N/A') {
+            return {
+                value: 'N/A',
+                level: 'Unknown',
+                color: 'text-gray-400',
+                bgColor: 'from-gray-400/20 to-gray-600/20',
+                borderColor: 'border-gray-300/30'
+            }
+        }
+
+        const numericAqi = parseInt(aqi)
+
+        if (numericAqi <= 50) {
+            return {
+                value: numericAqi,
+                level: 'Good',
+                color: 'text-green-400',
+                bgColor: 'from-green-400/20 to-emerald-400/20',
+                borderColor: 'border-green-300/30'
+            }
+        } else if (numericAqi <= 100) {
+            return {
+                value: numericAqi,
+                level: 'Moderate',
+                color: 'text-yellow-400',
+                bgColor: 'from-yellow-400/20 to-orange-400/20',
+                borderColor: 'border-yellow-300/30'
+            }
+        } else if (numericAqi <= 150) {
+            return {
+                value: numericAqi,
+                level: 'Unhealthy for Sensitive',
+                color: 'text-orange-400',
+                bgColor: 'from-orange-400/20 to-red-400/20',
+                borderColor: 'border-orange-300/30'
+            }
+        } else if (numericAqi <= 200) {
+            return {
+                value: numericAqi,
+                level: 'Unhealthy',
+                color: 'text-red-400',
+                bgColor: 'from-red-400/20 to-pink-400/20',
+                borderColor: 'border-red-300/30'
+            }
+        } else {
+            return {
+                value: numericAqi,
+                level: 'Very Unhealthy',
+                color: 'text-purple-400',
+                bgColor: 'from-purple-400/20 to-violet-400/20',
+                borderColor: 'border-purple-300/30'
+            }
+        }
+    }
+
+    const aqiInfo = getAQIInfo(weatherData?.aqi)
     const containerVariants = {
         hidden: { opacity: 0, x: 50, scale: 0.9 },
         visible: {
@@ -110,26 +168,26 @@ function AirQualityCard() {
                 >
                     <div className="space-y-2">
                         <motion.p
-                            className='font-bold text-green-400 text-4xl'
+                            className={`font-bold ${aqiInfo.color} text-4xl`}
                             variants={numberVariants}
                             whileHover={{
                                 scale: 1.1,
                                 textShadow: "0 0 20px rgba(34, 197, 94, 0.6)"
                             }}
                         >
-                            42
+                            {aqiInfo.value}
                         </motion.p>
                         <motion.div
                             className="relative"
                             variants={itemVariants}
                         >
                             <motion.p
-                                className='text-green-300 font-semibold text-lg'
+                                className={`${aqiInfo.color.replace('400', '300')} font-semibold text-lg`}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.8, duration: 0.5 }}
                             >
-                                Good
+                                {aqiInfo.level}
                             </motion.p>
 
                             {/* Animated progress bar */}
