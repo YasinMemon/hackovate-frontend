@@ -1,7 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import MLPredictionProgress from './MLPredictionProgress'
 
-function AlertCard({ alert, index }) {
+function AlertCard({ alert, index, mlPrediction }) {
     const getGradientColors = (type) => {
         switch (type) {
             case 'uv':
@@ -88,6 +89,17 @@ function AlertCard({ alert, index }) {
             >
                 {alert.message}
             </motion.p>
+            
+            {/* ML Prediction Progress Indicator */}
+            {mlPrediction && (alert.type.startsWith('ml') || alert.type === 'ml') && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.5 + index * 0.2, duration: 0.5 }}
+                >
+                    <MLPredictionProgress prediction={mlPrediction} />
+                </motion.div>
+            )}
         </motion.div>
     )
 }

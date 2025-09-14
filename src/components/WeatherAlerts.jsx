@@ -114,35 +114,40 @@ function WeatherAlerts({ weatherData }) {
             // Add ML prediction alert based on event type and confidence
             let alertType = 'ml'
             let alertMessage = ''
+            let alertLabel = 'AI Weather Prediction'
 
             if (prediction.event === 'normal') {
                 alertType = 'ml-success'
-                alertMessage = `ML Prediction: ${prediction.reason} (${Math.round(prediction.confidence * 100)}% confident)`
+                alertMessage = `Stable weather conditions detected`
+                alertLabel = '✅ AI Safety Confirmed'
             } else if (prediction.event === 'warning') {
                 alertType = 'ml-warning'
-                alertMessage = `ML Warning: ${prediction.reason} (${Math.round(prediction.confidence * 100)}% confident)`
+                alertMessage = `Potential weather changes ahead`
+                alertLabel = '⚠️ AI Weather Warning'
             } else if (prediction.event === 'danger') {
                 alertType = 'ml-danger'
-                alertMessage = `ML Alert: ${prediction.reason} (${Math.round(prediction.confidence * 100)}% confident)`
+                alertMessage = `Severe weather conditions predicted`
+                alertLabel = '🚨 AI Emergency Alert'
             } else {
                 alertType = 'ml'
-                alertMessage = `ML Prediction: ${prediction.event} - ${prediction.reason}`
-            }
-
-            // Add predicted wind speed if available and different from current
-            if (prediction.predicted_wind_speed && Math.abs(prediction.predicted_wind_speed) > 0.1) {
-                const windChange = prediction.predicted_wind_speed > 0 ? 'increasing' : 'decreasing'
-                alertMessage += ` | Wind ${windChange}`
+                alertMessage = `AI Analysis: ${prediction.event} - ${prediction.reason}`
+                alertLabel = '🤖 AI Weather Analysis'
             }
 
             alerts.push({
                 type: alertType,
-                label: 'AI Prediction',
+                label: alertLabel,
                 message: alertMessage
             })
         }
 
-        return alerts.slice(0, 4) // Allow 4 alerts to include ML prediction
+        // Prioritize ML prediction alerts - always include them if available
+        const mlAlerts = alerts.filter(alert => alert.type.startsWith('ml'))
+        const otherAlerts = alerts.filter(alert => !alert.type.startsWith('ml'))
+        
+        // If we have ML alerts, limit other alerts to make room
+        const maxOtherAlerts = mlAlerts.length > 0 ? 3 : 4
+        return [...otherAlerts.slice(0, maxOtherAlerts), ...mlAlerts]
     }
 
     const alerts = generateAlerts(weatherData)
@@ -179,6 +184,7 @@ function WeatherAlerts({ weatherData }) {
                         key={alert.type}
                         alert={alert}
                         index={index}
+                        mlPrediction={weatherData?.ml_prediction}
                     />
                 ))}
             </div>
