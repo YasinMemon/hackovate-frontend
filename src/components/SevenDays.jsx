@@ -109,7 +109,7 @@ function SevenDays({ forecast }) {
                             {day.day}
                         </div>
                         <div className="w-12 h-12 mx-auto mb-2 bg-white/20 rounded-full flex items-center justify-center">
-                            <img src={day.icon} alt={day.weather} className="w-8 h-8" />
+                            <img src={day.icon} alt={day.weather} className="w-8 h-8" loading="lazy" />
                         </div>
                         <div className="text-white text-xl font-bold">
                             {day.temp}°C

@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-function Header({ city = "New York, NY" }) {
+function Header({ city = "New York, NY", cities = [], selectedCity, onCityChange }) {
     const titleVariants = {
         hidden: { opacity: 0, y: -50, scale: 0.5 },
         visible: {
@@ -48,30 +48,8 @@ function Header({ city = "New York, NY" }) {
         <header className="relative">
             <motion.h1
                 className="text-5xl font-extrabold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent"
-                variants={titleVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{
-                    scale: 1.05,
-                    textShadow: "0 0 20px rgba(255,255,255,0.5)"
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-                {'Noorix'.split('').map((letter, index) => (
-                    <motion.span
-                        key={index}
-                        variants={letterVariants}
-                        custom={index}
-                        className="inline-block"
-                        whileHover={{
-                            y: -10,
-                            color: "#fbbf24",
-                            transition: { duration: 0.2 }
-                        }}
-                    >
-                        {letter}
-                    </motion.span>
-                ))}
+                Noorix
             </motion.h1>
 
             <motion.div
@@ -91,6 +69,7 @@ function Header({ city = "New York, NY" }) {
                     src="location.png"
                     alt="location"
                     className="w-5 h-5"
+                    loading="lazy"
                     animate={{
                         rotate: [0, 10, -10, 0],
                         scale: [1, 1.1, 1]
@@ -101,14 +80,37 @@ function Header({ city = "New York, NY" }) {
                         repeatDelay: 3
                     }}
                 />
-                <motion.span
-                    className="text-lg font-semibold text-white drop-shadow-lg"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6, duration: 0.5 }}
-                >
-                    {city}
-                </motion.span>
+                {cities && cities.length > 0 ? (
+                    <select
+                        value={selectedCity}
+                        onChange={(e) => onCityChange(e.target.value)}
+                        className="bg-transparent text-white font-semibold text-lg border-none outline-none cursor-pointer appearance-none pr-2 hover:text-blue-200 transition-colors duration-200"
+                        style={{
+                            background: 'transparent',
+                            color: 'white',
+                            textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                        }}
+                    >
+                        {cities.map((cityOption) => (
+                            <option
+                                key={cityOption.value}
+                                value={cityOption.value}
+                                className="bg-gray-800 text-white hover:bg-gray-700"
+                            >
+                                {cityOption.label}
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <motion.span
+                        className="text-lg font-semibold text-white drop-shadow-lg"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6, duration: 0.5 }}
+                    >
+                        {city}
+                    </motion.span>
+                )}
             </motion.div>
         </header>
     )

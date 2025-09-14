@@ -1,25 +1,41 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense, lazy } from 'react'
 import { motion } from 'framer-motion'
 import './App.css'
 import Header from './components/Header'
-import CurrenWeatherCard from './components/CurrenWeatherCard'
-import SevenDays from './components/SevenDays'
-import RightSideCards from './components/RightSideCards'
 import LoadingSkeleton from './components/LoadingSkeleton'
 import MainLayout from './components/MainLayout'
-import WeatherAlerts from './components/WeatherAlerts'
-import RefreshButton from './components/RefreshButton'
+
+// Lazy load components
+const CurrenWeatherCard = lazy(() => import('./components/CurrenWeatherCard'))
+const SevenDays = lazy(() => import('./components/SevenDays'))
+const RightSideCards = lazy(() => import('./components/RightSideCards'))
+const WeatherAlerts = lazy(() => import('./components/WeatherAlerts'))
+const RefreshButton = lazy(() => import('./components/RefreshButton'))
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [weatherData, setWeatherData] = useState(null)
   const [error, setError] = useState(null)
+  const [selectedCity, setSelectedCity] = useState('ahmedabad')
+
+  const cities = [
+    { value: 'ahmedabad', label: 'Ahmedabad' },
+    { value: 'delhi', label: 'Delhi' },
+    { value: 'mumbai', label: 'Mumbai' },
+    { value: 'bangalore', label: 'Bangalore' }
+  ]
 
   useEffect(() => {
     const getWeatherData = async () => {
       try {
         setError(null)
-        const response = await fetch("http://localhost:5000/api/weather")
+        const response = await fetch('http://localhost:5000/api/weather', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ city: selectedCity })
+        })
 
         if (!response.ok) {
           throw new Error('Failed to fetch weather data')
@@ -27,14 +43,14 @@ function App() {
 
         const data = await response.json()
         setWeatherData(data)
-        console.log(data)
       } catch (err) {
         console.error("Error fetching weather data:", err)
         setError(err.message)
 
         // Use mock data for development/demo
+        const selectedCityData = cities.find(city => city.value === selectedCity)
         setWeatherData({
-          city: 'Ahmedabad',
+          city: selectedCityData?.label || 'Ahmedabad',
           current: {
             aqi: 'N/A',
             humidity: 62,
@@ -57,14 +73,20 @@ function App() {
       }
     }
     getWeatherData()
-  }, [])
+  }, [selectedCity])
 
   const handleRefresh = () => {
     setIsLoading(true)
     const getWeatherData = async () => {
       try {
         setError(null)
-        const response = await fetch("http://localhost:5000/api/weather")
+        const response = await fetch('http://localhost:5000/api/weather', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ city: selectedCity })
+        })
         const data = await response.json()
         setWeatherData(data)
       } catch (err) {
@@ -75,6 +97,11 @@ function App() {
       }
     }
     getWeatherData()
+  }
+
+  const handleCityChange = (cityValue) => {
+    setSelectedCity(cityValue)
+    setIsLoading(true)
   }
 
   // Show loading skeleton while data is loading
@@ -104,10 +131,21 @@ function App() {
 
   return (
     <MainLayout>
-      <Header city={weatherData?.city} />
-      <MainContent weatherData={weatherData} />
-      <SevenDays forecast={weatherData?.forecast} />
-      <RefreshButton onRefresh={handleRefresh} />
+      <Header
+        city={weatherData?.city}
+        cities={cities}
+        selectedCity={selectedCity}
+        onCityChange={handleCityChange}
+      />
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-64 mt-6"></div>}>
+        <MainContent weatherData={weatherData} />
+      </Suspense>
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-32 mt-8"></div>}>
+        <SevenDays forecast={weatherData?.forecast} />
+      </Suspense>
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
+        <RefreshButton onRefresh={handleRefresh} />
+      </Suspense>
     </MainLayout>
   )
 }
@@ -116,7 +154,7 @@ function App() {
 function MainContent({ weatherData }) {
   return (
     <motion.div
-      className='lg:flex gap-6 mt-6 max-w-screen'
+      className='lg:flex gap-6 mt-6 w-full'
       variants={{
         hidden: { opacity: 0, y: 20 },
         visible: {
@@ -126,9 +164,15 @@ function MainContent({ weatherData }) {
         }
       }}
     >
-      <CurrenWeatherCard weatherData={weatherData?.current} />
-      <RightSideCards weatherData={weatherData?.current} />
-      <WeatherAlerts weatherData={weatherData?.current} />
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 flex-1"></div>}>
+        <CurrenWeatherCard weatherData={weatherData?.current} />
+      </Suspense>
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-80"></div>}>
+        <RightSideCards weatherData={weatherData?.current} />
+      </Suspense>
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-80"></div>}>
+        <WeatherAlerts weatherData={weatherData?.current} />
+      </Suspense>
     </motion.div>
   )
 }

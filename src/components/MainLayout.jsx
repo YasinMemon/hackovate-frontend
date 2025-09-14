@@ -22,8 +22,8 @@ function MainLayout({ children }) {
         visible: {
             opacity: 1,
             transition: {
-                duration: 0.8,
-                staggerChildren: 0.1,
+                duration: 0.4,
+                staggerChildren: 0.05,
                 ease: "easeOut"
             }
         }
@@ -50,7 +50,7 @@ function MainLayout({ children }) {
 
     return (
         <motion.div
-            className='max-w-screen lg:px-6'
+            className='max-w-screen lg:px-6 overflow-x-hidden'
             style={backgroundStyle}
             variants={containerVariants}
             initial="hidden"

@@ -202,6 +202,7 @@ function CurrenWeatherCard({ weatherData }) {
                                     src={icon.src}
                                     alt={icon.alt}
                                     className="w-12 h-12 drop-shadow-lg"
+                                    loading="lazy"
                                     animate={{
                                         y: [0, -5, 0],
                                         rotate: [0, 5, -5, 0]
