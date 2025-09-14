@@ -50,20 +50,14 @@ function MainLayout({ children }) {
 
     return (
         <motion.div
-            className='px-10 min-w-screen min-h-screen relative'
+            className='px-10 relative min-h-screen'
             style={backgroundStyle}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
             <BackgroundBlobs />
-
-            <motion.div
-                variants={containerVariants}
-                className="relative z-10"
-            >
-                {children}
-            </motion.div>
+            {children}
         </motion.div>
     )
 }
