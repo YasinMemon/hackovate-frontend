@@ -50,7 +50,11 @@ function MainLayout({ children }) {
 
     return (
         <motion.div
+<<<<<<< HEAD
             className='min-h-screen w-full overflow-x-hidden'
+=======
+            className='w-full min-h-screen px-2 sm:px-4 lg:px-6 overflow-x-hidden'
+>>>>>>> c850965c35a6617b81d56d0165fbc7b64bc49046
             style={backgroundStyle}
             variants={containerVariants}
             initial="hidden"
@@ -60,7 +64,11 @@ function MainLayout({ children }) {
 
             <motion.div
                 variants={containerVariants}
+<<<<<<< HEAD
                 className="relative z-10 w-full"
+=======
+                className="relative z-10 w-full max-w-full"
+>>>>>>> c850965c35a6617b81d56d0165fbc7b64bc49046
             >
                 {children}
             </motion.div>

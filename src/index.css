@@ -48,3 +48,39 @@ html::-webkit-scrollbar {
   transform: translateZ(0);
   will-change: transform;
 }
+
+/* Mobile-specific styles */
+@media (max-width: 1024px) {
+  /* Hide scrollbars on mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Ensure no horizontal overflow */
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  html {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  
+  /* Prevent horizontal scrolling on containers */
+  .overflow-x-hidden {
+    overflow-x: hidden !important;
+  }
+  
+  /* Ensure all containers respect viewport width */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}

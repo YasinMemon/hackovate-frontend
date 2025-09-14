@@ -1,6 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import MLPredictionProgress from './MLPredictionProgress'
 
+<<<<<<< HEAD
 function AlertCard({ alert, index }) {
     const getGradientColors = (type, alertClass, isMLPrediction) => {
         // ML Prediction specific colors
@@ -50,6 +52,10 @@ function AlertCard({ alert, index }) {
         }
 
         // Regular alert colors
+=======
+function AlertCard({ alert, index, mlPrediction }) {
+    const getGradientColors = (type) => {
+>>>>>>> c850965c35a6617b81d56d0165fbc7b64bc49046
         switch (type) {
             case 'uv':
                 return {
@@ -80,6 +86,34 @@ function AlertCard({ alert, index }) {
                     iconBg: 'bg-indigo-500/20',
                     progressBg: 'bg-indigo-500/20',
                     progressFill: 'bg-indigo-400'
+                }
+            case 'ml-success':
+                return {
+                    gradient: 'from-green-400/20 to-emerald-400/20',
+                    border: 'border-green-300/30',
+                    textColor: 'text-green-100',
+                    valueColor: 'text-green-200'
+                }
+            case 'ml-warning':
+                return {
+                    gradient: 'from-amber-400/20 to-yellow-400/20',
+                    border: 'border-amber-300/30',
+                    textColor: 'text-amber-100',
+                    valueColor: 'text-amber-200'
+                }
+            case 'ml-danger':
+                return {
+                    gradient: 'from-red-400/20 to-pink-400/20',
+                    border: 'border-red-300/30',
+                    textColor: 'text-red-100',
+                    valueColor: 'text-red-200'
+                }
+            case 'ml':
+                return {
+                    gradient: 'from-purple-400/20 to-violet-400/20',
+                    border: 'border-purple-300/30',
+                    textColor: 'text-purple-100',
+                    valueColor: 'text-purple-200'
                 }
             default:
                 return {
@@ -141,6 +175,7 @@ function AlertCard({ alert, index }) {
             >
                 {alert.message}
             </motion.p>
+<<<<<<< HEAD
 
             {/* ML Prediction specific content */}
             {alert.isMLPrediction && (
@@ -192,6 +227,18 @@ function AlertCard({ alert, index }) {
                         </motion.div>
                     )}
                 </div>
+=======
+            
+            {/* ML Prediction Progress Indicator */}
+            {mlPrediction && (alert.type.startsWith('ml') || alert.type === 'ml') && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.5 + index * 0.2, duration: 0.5 }}
+                >
+                    <MLPredictionProgress prediction={mlPrediction} />
+                </motion.div>
+>>>>>>> c850965c35a6617b81d56d0165fbc7b64bc49046
             )}
         </motion.div>
     )
