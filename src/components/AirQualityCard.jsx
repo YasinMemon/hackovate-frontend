@@ -219,6 +219,7 @@ function AirQualityCard({ weatherData }) {
                             src="./icons/leave.png"
                             alt="leaf"
                             className="w-16 h-16 drop-shadow-lg"
+                            loading="lazy"
                             animate={{
                                 rotate: [0, 5, -5, 0],
                                 y: [0, -3, 0]
