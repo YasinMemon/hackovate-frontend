@@ -25,6 +25,34 @@ function AlertCard({ alert, index }) {
                     textColor: 'text-indigo-100',
                     valueColor: 'text-indigo-200'
                 }
+            case 'ml-success':
+                return {
+                    gradient: 'from-green-400/20 to-emerald-400/20',
+                    border: 'border-green-300/30',
+                    textColor: 'text-green-100',
+                    valueColor: 'text-green-200'
+                }
+            case 'ml-warning':
+                return {
+                    gradient: 'from-amber-400/20 to-yellow-400/20',
+                    border: 'border-amber-300/30',
+                    textColor: 'text-amber-100',
+                    valueColor: 'text-amber-200'
+                }
+            case 'ml-danger':
+                return {
+                    gradient: 'from-red-400/20 to-pink-400/20',
+                    border: 'border-red-300/30',
+                    textColor: 'text-red-100',
+                    valueColor: 'text-red-200'
+                }
+            case 'ml':
+                return {
+                    gradient: 'from-purple-400/20 to-violet-400/20',
+                    border: 'border-purple-300/30',
+                    textColor: 'text-purple-100',
+                    valueColor: 'text-purple-200'
+                }
             default:
                 return {
                     gradient: 'from-gray-400/20 to-gray-600/20',

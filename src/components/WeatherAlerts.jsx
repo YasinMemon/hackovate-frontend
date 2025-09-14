@@ -107,7 +107,42 @@ function WeatherAlerts({ weatherData }) {
             }
         }
 
-        return alerts.slice(0, 3) // Limit to 3 alerts max
+        // ML Prediction alerts - add these after other alerts
+        if (data.ml_prediction) {
+            const prediction = data.ml_prediction
+
+            // Add ML prediction alert based on event type and confidence
+            let alertType = 'ml'
+            let alertMessage = ''
+
+            if (prediction.event === 'normal') {
+                alertType = 'ml-success'
+                alertMessage = `ML Prediction: ${prediction.reason} (${Math.round(prediction.confidence * 100)}% confident)`
+            } else if (prediction.event === 'warning') {
+                alertType = 'ml-warning'
+                alertMessage = `ML Warning: ${prediction.reason} (${Math.round(prediction.confidence * 100)}% confident)`
+            } else if (prediction.event === 'danger') {
+                alertType = 'ml-danger'
+                alertMessage = `ML Alert: ${prediction.reason} (${Math.round(prediction.confidence * 100)}% confident)`
+            } else {
+                alertType = 'ml'
+                alertMessage = `ML Prediction: ${prediction.event} - ${prediction.reason}`
+            }
+
+            // Add predicted wind speed if available and different from current
+            if (prediction.predicted_wind_speed && Math.abs(prediction.predicted_wind_speed) > 0.1) {
+                const windChange = prediction.predicted_wind_speed > 0 ? 'increasing' : 'decreasing'
+                alertMessage += ` | Wind ${windChange}`
+            }
+
+            alerts.push({
+                type: alertType,
+                label: 'AI Prediction',
+                message: alertMessage
+            })
+        }
+
+        return alerts.slice(0, 4) // Allow 4 alerts to include ML prediction
     }
 
     const alerts = generateAlerts(weatherData)

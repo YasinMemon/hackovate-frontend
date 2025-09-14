@@ -58,7 +58,14 @@ function App() {
             sunset: '18:45:46',
             temperature: 30.02,
             weather: 'haze',
-            wind_speed: 3.09
+            wind_speed: 3.09,
+            ml_prediction: {
+              alert_class: "success",
+              confidence: 0.9999998807907104,
+              event: "normal",
+              predicted_wind_speed: -0.4439336955547333,
+              reason: "Stable conditions"
+            }
           },
           forecast: [
             { date: '2025-09-13', temperature: { max: 29.97, min: 28.87 }, weather: 'scattered clouds' },
@@ -131,25 +138,25 @@ function App() {
 
   return (
     <div className="max-w-screen overflow-x-hidden mx-auto" >
-    <Header
-    city={weatherData?.city}
-    cities={cities}
-    selectedCity={selectedCity}
-    onCityChange={handleCityChange}
-    />
-    <MainLayout>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-64 mt-6"></div>}>
-        <MainContent weatherData={weatherData} />
-      </Suspense>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-32 mt-8"></div>}>
-        <SevenDays forecast={weatherData?.forecast} />
-      </Suspense>
-      {/* <Suspense fallback={<div className="animate-pulse hidden lg:block bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
+      <Header
+        city={weatherData?.city}
+        cities={cities}
+        selectedCity={selectedCity}
+        onCityChange={handleCityChange}
+      />
+      <MainLayout>
+        <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-64 mt-6"></div>}>
+          <MainContent weatherData={weatherData} />
+        </Suspense>
+        <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-32 mt-8"></div>}>
+          <SevenDays forecast={weatherData?.forecast} />
+        </Suspense>
+        {/* <Suspense fallback={<div className="animate-pulse hidden lg:block bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
         <RefreshButton onRefresh={handleRefresh} />
       </Suspense> */}
-    </MainLayout>
+      </MainLayout>
     </div>
-)
+  )
 }
 
 
