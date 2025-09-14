@@ -116,7 +116,7 @@ function App() {
 function MainContent({ weatherData }) {
   return (
     <motion.div
-      className='lg:flex gap-6 mt-6 max-w-screen'
+      className='flex gap-6 mt-6'
       variants={{
         hidden: { opacity: 0, y: 20 },
         visible: {
