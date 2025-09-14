@@ -130,24 +130,26 @@ function App() {
   }
 
   return (
+    <div className="max-w-screen overflow-x-hidden mx-auto" >
+    <Header
+    city={weatherData?.city}
+    cities={cities}
+    selectedCity={selectedCity}
+    onCityChange={handleCityChange}
+    />
     <MainLayout>
-      <Header
-        city={weatherData?.city}
-        cities={cities}
-        selectedCity={selectedCity}
-        onCityChange={handleCityChange}
-      />
       <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-64 mt-6"></div>}>
         <MainContent weatherData={weatherData} />
       </Suspense>
       <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-32 mt-8"></div>}>
         <SevenDays forecast={weatherData?.forecast} />
       </Suspense>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
+      {/* <Suspense fallback={<div className="animate-pulse hidden lg:block bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
         <RefreshButton onRefresh={handleRefresh} />
-      </Suspense>
+      </Suspense> */}
     </MainLayout>
-  )
+    </div>
+)
 }
 
 
