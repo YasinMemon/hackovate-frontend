@@ -154,7 +154,7 @@ function App() {
 function MainContent({ weatherData }) {
   return (
     <motion.div
-      className='lg:flex gap-6 mt-6 w-full'
+      className='flex flex-col lg:flex-row gap-4 lg:gap-6 mt-6 w-full'
       variants={{
         hidden: { opacity: 0, y: 20 },
         visible: {

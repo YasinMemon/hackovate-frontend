@@ -91,13 +91,14 @@ function SevenDays({ forecast }) {
             </motion.h2>
 
             <motion.div
-                className="flex gap-4 overflow-x-auto pb-4"
+                className="flex gap-3 lg:gap-4 overflow-x-auto pb-4 scrollbar-hide"
                 variants={containerVariants}
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {weekData.map((day, index) => (
                     <motion.div
                         key={index}
-                        className="min-w-[140px] bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-white/20 text-center"
+                        className="min-w-[120px] lg:min-w-[140px] bg-white/10 backdrop-blur-lg rounded-2xl p-3 lg:p-4 border border-white/20 text-center"
                         variants={cardVariants}
                         whileHover={{
                             scale: 1.05,

@@ -45,73 +45,112 @@ function Header({ city = "New York, NY", cities = [], selectedCity, onCityChange
     }
 
     return (
-        <header className="relative">
-            <motion.h1
-                className="text-5xl font-extrabold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent"
-            >
-                Noorix
-            </motion.h1>
+        <header className="w-full bg-white shadow-lg relative z-50">
+            <nav className="w-full py-4">
+                <div className="flex items-center justify-between w-full px-2 sm:px-4 lg:px-6">
+                    {/* Logo Section */}
+                    <motion.div
+                        className="flex items-center"
+                        variants={titleVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <img 
+                            src="./logo.png" 
+                            alt="logo"
+                            className="h-8 lg:h-10 w-auto"
+                        />
+                    </motion.div>
 
-            <motion.div
-                className='absolute flex justify-center gap-3 backdrop-blur-lg bg-white/20 border border-white/30 px-6 py-3 rounded-2xl items-center right-5 top-5 shadow-2xl'
-                variants={locationVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover={{
-                    scale: 1.05,
-                    backgroundColor: "rgba(255,255,255,0.3)",
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-                <motion.img
-                    src="location.png"
-                    alt="location"
-                    className="w-5 h-5"
-                    loading="lazy"
-                    animate={{
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1]
-                    }}
-                    transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatDelay: 3
-                    }}
-                />
-                {cities && cities.length > 0 ? (
-                    <select
-                        value={selectedCity}
-                        onChange={(e) => onCityChange(e.target.value)}
-                        className="bg-transparent text-white font-semibold text-lg border-none outline-none cursor-pointer appearance-none pr-2 hover:text-blue-200 transition-colors duration-200"
-                        style={{
-                            background: 'transparent',
-                            color: 'white',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                    {/* Navigation Links - Desktop */}
+                    <div className="hidden md:flex items-center gap-6">
+                        <motion.a
+                            href="#"
+                            className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Home
+                        </motion.a>
+                        <motion.a
+                            href="#"
+                            className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Guidance
+                        </motion.a>
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="md:hidden flex items-center gap-2">
+                        <motion.button
+                            className="text-gray-700 hover:text-blue-600 font-medium text-sm transition-colors duration-200"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Menu
+                        </motion.button>
+                    </div>
+
+                    {/* City Selector Section */}
+                    <motion.div
+                        className='flex items-center gap-2 lg:gap-3 bg-gray-50 border border-gray-200 px-2 lg:px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-200'
+                        variants={locationVariants}
+                        initial="hidden"
+                        animate="visible"
+                        whileHover={{
+                            scale: 1.02,
+                            backgroundColor: "#f9fafb",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                         }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
-                        {cities.map((cityOption) => (
-                            <option
-                                key={cityOption.value}
-                                value={cityOption.value}
-                                className="bg-gray-800 text-white hover:bg-gray-700"
+                        <motion.img
+                            src="location.png"
+                            alt="location"
+                            className="w-4 h-4 lg:w-5 lg:h-5"
+                            loading="lazy"
+                            animate={{
+                                rotate: [0, 10, -10, 0],
+                                scale: [1, 1.1, 1]
+                            }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                repeatDelay: 3
+                            }}
+                        />
+                        {cities && cities.length > 0 ? (
+                            <select
+                                value={selectedCity}
+                                onChange={(e) => onCityChange(e.target.value)}
+                                className="bg-transparent text-gray-800 font-semibold text-sm lg:text-base border-none outline-none cursor-pointer appearance-none pr-2 hover:text-blue-600 transition-colors duration-200"
                             >
-                                {cityOption.label}
-                            </option>
-                        ))}
-                    </select>
-                ) : (
-                    <motion.span
-                        className="text-lg font-semibold text-white drop-shadow-lg"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6, duration: 0.5 }}
-                    >
-                        {city}
-                    </motion.span>
-                )}
-            </motion.div>
+                                {cities.map((cityOption) => (
+                                    <option
+                                        key={cityOption.value}
+                                        value={cityOption.value}
+                                        className="bg-white text-gray-800 hover:bg-gray-100"
+                                    >
+                                        {cityOption.label}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            <motion.span
+                                className="text-sm lg:text-base font-semibold text-gray-800"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.6, duration: 0.5 }}
+                            >
+                                {city}
+                            </motion.span>
+                        )}
+                    </motion.div>
+                </div>
+            </nav>
         </header>
     )
 }

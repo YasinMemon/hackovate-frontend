@@ -86,7 +86,7 @@ function CurrenWeatherCard({ weatherData }) {
 
     return (
         <motion.div
-            className='mt-10 backdrop-blur-lg bg-white/10 border border-white/20 py-6 w-full px-8 rounded-2xl shadow-2xl relative overflow-hidden'
+            className='mt-6 lg:mt-10 backdrop-blur-lg bg-white/10 border border-white/20 py-4 lg:py-6 w-full px-4 lg:px-8 rounded-2xl shadow-2xl relative overflow-hidden'
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -147,7 +147,7 @@ function CurrenWeatherCard({ weatherData }) {
                         variants={itemVariants}
                     >
                         <motion.span
-                            className='font-bold text-6xl text-white block'
+                            className='font-bold text-4xl lg:text-6xl text-white block'
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{
@@ -178,7 +178,7 @@ function CurrenWeatherCard({ weatherData }) {
                 </motion.div>
 
                 <motion.div
-                    className='flex justify-around gap-8'
+                    className='flex justify-around gap-4 lg:gap-8'
                     variants={itemVariants}
                 >
                     {weatherIcons.map((icon, index) => (
