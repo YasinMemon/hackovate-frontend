@@ -50,7 +50,7 @@ function MainLayout({ children }) {
 
     return (
         <motion.div
-            className='px-10 min-w-screen min-h-screen relative'
+            className='max-w-screen lg:px-6'
             style={backgroundStyle}
             variants={containerVariants}
             initial="hidden"
@@ -67,5 +67,4 @@ function MainLayout({ children }) {
         </motion.div>
     )
 }
-
 export default MainLayout
