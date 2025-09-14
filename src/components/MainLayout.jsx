@@ -50,7 +50,7 @@ function MainLayout({ children }) {
 
     return (
         <motion.div
-            className='max-w-screen lg:px-6 overflow-x-hidden'
+            className='min-h-screen w-full overflow-x-hidden'
             style={backgroundStyle}
             variants={containerVariants}
             initial="hidden"
@@ -60,7 +60,7 @@ function MainLayout({ children }) {
 
             <motion.div
                 variants={containerVariants}
-                className="relative z-10"
+                className="relative z-10 w-full"
             >
                 {children}
             </motion.div>

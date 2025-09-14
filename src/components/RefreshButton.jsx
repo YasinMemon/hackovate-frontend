@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 function RefreshButton({ onRefresh }) {
     return (
         <motion.button
-            className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 flex items-center justify-center group z-50"
+            className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 items-center justify-center group z-50"
             whileHover={{
                 scale: 1.1,
                 boxShadow: "0 20px 40px rgba(0,0,0,0.3)",

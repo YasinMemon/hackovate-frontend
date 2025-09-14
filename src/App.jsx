@@ -1,6 +1,7 @@
 import { useState, useEffect, Suspense, lazy } from 'react'
 import { motion } from 'framer-motion'
 import './App.css'
+import Navigation from './components/Navigation'
 import Header from './components/Header'
 import LoadingSkeleton from './components/LoadingSkeleton'
 import MainLayout from './components/MainLayout'
@@ -11,12 +12,16 @@ const SevenDays = lazy(() => import('./components/SevenDays'))
 const RightSideCards = lazy(() => import('./components/RightSideCards'))
 const WeatherAlerts = lazy(() => import('./components/WeatherAlerts'))
 const RefreshButton = lazy(() => import('./components/RefreshButton'))
+const MLPredictionDemo = lazy(() => import('./components/MLPredictionDemo'))
+const Guidance = lazy(() => import('./components/Guidance'))
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [weatherData, setWeatherData] = useState(null)
+  const [mlPrediction, setMlPrediction] = useState(null)
   const [error, setError] = useState(null)
   const [selectedCity, setSelectedCity] = useState('ahmedabad')
+  const [currentPage, setCurrentPage] = useState('homepage')
 
   const cities = [
     { value: 'ahmedabad', label: 'Ahmedabad' },
@@ -29,7 +34,9 @@ function App() {
     const getWeatherData = async () => {
       try {
         setError(null)
-        const response = await fetch('http://localhost:5000/api/weather', {
+        
+        // Fetch weather data
+        const weatherResponse = await fetch('http://localhost:5000/api/weather', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -37,12 +44,39 @@ function App() {
           body: JSON.stringify({ city: selectedCity })
         })
 
-        if (!response.ok) {
+        if (!weatherResponse.ok) {
           throw new Error('Failed to fetch weather data')
         }
 
-        const data = await response.json()
-        setWeatherData(data)
+        const weatherData = await weatherResponse.json()
+        setWeatherData(weatherData)
+
+        // Fetch ML prediction data
+        try {
+          const mlResponse = await fetch('http://localhost:5000/api/ml-prediction', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ city: selectedCity })
+          })
+
+          if (mlResponse.ok) {
+            const mlData = await mlResponse.json()
+            setMlPrediction(mlData.ml_prediction)
+          }
+        } catch (mlErr) {
+          console.warn("ML prediction not available:", mlErr)
+          // Use mock ML prediction data for demo
+          setMlPrediction({
+            alert_class: "success",
+            confidence: 0.9999998807907104,
+            event: "normal",
+            predicted_wind_speed: -0.4439336955547333,
+            reason: "Stable conditions"
+          })
+        }
+
       } catch (err) {
         console.error("Error fetching weather data:", err)
         setError(err.message)
@@ -68,6 +102,15 @@ function App() {
             { date: '2025-09-17', temperature: { max: 29.3, min: 26.9 }, weather: 'overcast clouds' }
           ]
         })
+
+        // Mock ML prediction data
+        setMlPrediction({
+          alert_class: "success",
+          confidence: 0.9999998807907104,
+          event: "normal",
+          predicted_wind_speed: -0.4439336955547333,
+          reason: "Stable conditions"
+        })
       } finally {
         setTimeout(() => setIsLoading(false), 1500)
       }
@@ -80,15 +123,35 @@ function App() {
     const getWeatherData = async () => {
       try {
         setError(null)
-        const response = await fetch('http://localhost:5000/api/weather', {
+        
+        // Fetch weather data
+        const weatherResponse = await fetch('http://localhost:5000/api/weather', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ city: selectedCity })
         })
-        const data = await response.json()
-        setWeatherData(data)
+        const weatherData = await weatherResponse.json()
+        setWeatherData(weatherData)
+
+        // Fetch ML prediction data
+        try {
+          const mlResponse = await fetch('http://localhost:5000/api/ml-prediction', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ city: selectedCity })
+          })
+
+          if (mlResponse.ok) {
+            const mlData = await mlResponse.json()
+            setMlPrediction(mlData.ml_prediction)
+          }
+        } catch (mlErr) {
+          console.warn("ML prediction not available:", mlErr)
+        }
       } catch (err) {
         console.error("Error fetching weather data:", err)
         setError(err.message)
@@ -129,32 +192,66 @@ function App() {
     )
   }
 
+  // Handle page changes
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+  }
+
+  // Render different pages based on current page
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'ml-demo':
+        return (
+          <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-96 mt-6"></div>}>
+            <MLPredictionDemo />
+          </Suspense>
+        )
+      case 'guidance':
+        return (
+          <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-96 mt-6"></div>}>
+            <Guidance />
+          </Suspense>
+        )
+      case 'homepage':
+      default:
+        return (
+          <>
+            <Header
+              city={weatherData?.city}
+              cities={cities}
+              selectedCity={selectedCity}
+              onCityChange={handleCityChange}
+              onRefresh={handleRefresh}
+            />
+            <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-64 mt-6"></div>}>
+              <MainContent weatherData={weatherData} mlPrediction={mlPrediction} />
+            </Suspense>
+            <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-32 mt-8"></div>}>
+              <SevenDays forecast={weatherData?.forecast} />
+            </Suspense>
+            <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
+              <RefreshButton onRefresh={handleRefresh} />
+            </Suspense>
+          </>
+        )
+    }
+  }
+
   return (
     <MainLayout>
-      <Header
-        city={weatherData?.city}
-        cities={cities}
-        selectedCity={selectedCity}
-        onCityChange={handleCityChange}
-      />
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-64 mt-6"></div>}>
-        <MainContent weatherData={weatherData} />
-      </Suspense>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-32 mt-8"></div>}>
-        <SevenDays forecast={weatherData?.forecast} />
-      </Suspense>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-full w-12 h-12 mt-6 mx-auto"></div>}>
-        <RefreshButton onRefresh={handleRefresh} />
-      </Suspense>
+      <Navigation currentPage={currentPage} onPageChange={handlePageChange} />
+      <div className="pt-16 md:pt-20 w-full px-4 lg:px-8 xl:px-12">
+        {renderPage()}
+      </div>
     </MainLayout>
   )
 }
 
 
-function MainContent({ weatherData }) {
+function MainContent({ weatherData, mlPrediction }) {
   return (
     <motion.div
-      className='lg:flex gap-6 mt-6 w-full'
+      className='flex flex-col lg:mt-20 lg:flex-row gap-4 lg:gap-6 mt-6 w-full'
       variants={{
         hidden: { opacity: 0, y: 20 },
         visible: {
@@ -164,14 +261,14 @@ function MainContent({ weatherData }) {
         }
       }}
     >
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 flex-1"></div>}>
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-full lg:flex-1"></div>}>
         <CurrenWeatherCard weatherData={weatherData?.current} />
       </Suspense>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-80"></div>}>
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-full lg:w-80"></div>}>
         <RightSideCards weatherData={weatherData?.current} />
       </Suspense>
-      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-80"></div>}>
-        <WeatherAlerts weatherData={weatherData?.current} />
+      <Suspense fallback={<div className="animate-pulse bg-white/10 rounded-2xl h-80 w-full lg:w-80"></div>}>
+        <WeatherAlerts weatherData={weatherData?.current} mlPrediction={mlPrediction} />
       </Suspense>
     </motion.div>
   )

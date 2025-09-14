@@ -2,59 +2,92 @@ import React from 'react'
 import { motion } from 'framer-motion'
 
 function AirQualityCard({ weatherData }) {
-    // Function to get AQI level and color based on value
+    // Function to get AQI level and color based on value (5-level system)
     const getAQIInfo = (aqi) => {
         if (!aqi || aqi === 'N/A') {
             return {
                 value: 'N/A',
                 level: 'Unknown',
+                levelNumber: 0,
                 color: 'text-gray-400',
                 bgColor: 'from-gray-400/20 to-gray-600/20',
-                borderColor: 'border-gray-300/30'
+                borderColor: 'border-gray-300/30',
+                progressColor: 'from-gray-400 to-gray-600',
+                icon: '❓',
+                description: 'Air quality data unavailable'
             }
         }
 
         const numericAqi = parseInt(aqi)
 
+        // Level 1: Good (0-50)
         if (numericAqi <= 50) {
             return {
                 value: numericAqi,
                 level: 'Good',
+                levelNumber: 1,
                 color: 'text-green-400',
                 bgColor: 'from-green-400/20 to-emerald-400/20',
-                borderColor: 'border-green-300/30'
+                borderColor: 'border-green-300/30',
+                progressColor: 'from-green-400 to-emerald-500',
+                icon: '🌿',
+                description: 'Air quality is satisfactory'
             }
-        } else if (numericAqi <= 100) {
+        }
+        // Level 2: Fair (51-100)
+        else if (numericAqi <= 100) {
             return {
                 value: numericAqi,
-                level: 'Moderate',
+                level: 'Fair',
+                levelNumber: 2,
                 color: 'text-yellow-400',
                 bgColor: 'from-yellow-400/20 to-orange-400/20',
-                borderColor: 'border-yellow-300/30'
+                borderColor: 'border-yellow-300/30',
+                progressColor: 'from-yellow-400 to-orange-500',
+                icon: '⚠️',
+                description: 'Air quality is acceptable'
             }
-        } else if (numericAqi <= 150) {
+        }
+        // Level 3: Poor (101-150)
+        else if (numericAqi <= 150) {
             return {
                 value: numericAqi,
-                level: 'Unhealthy for Sensitive',
+                level: 'Poor',
+                levelNumber: 3,
                 color: 'text-orange-400',
                 bgColor: 'from-orange-400/20 to-red-400/20',
-                borderColor: 'border-orange-300/30'
+                borderColor: 'border-orange-300/30',
+                progressColor: 'from-orange-400 to-red-500',
+                icon: '😷',
+                description: 'Sensitive groups may experience health effects'
             }
-        } else if (numericAqi <= 200) {
+        }
+        // Level 4: Very Poor (151-200)
+        else if (numericAqi <= 200) {
             return {
                 value: numericAqi,
-                level: 'Unhealthy',
+                level: 'Very Poor',
+                levelNumber: 4,
                 color: 'text-red-400',
                 bgColor: 'from-red-400/20 to-pink-400/20',
-                borderColor: 'border-red-300/30'
+                borderColor: 'border-red-300/30',
+                progressColor: 'from-red-400 to-pink-500',
+                icon: '🚨',
+                description: 'Everyone may experience health effects'
             }
-        } else {
+        }
+        // Level 5: Extremely Poor (201+)
+        else {
             return {
                 value: numericAqi,
-                level: 'Very Unhealthy',
+                level: 'Extremely Poor',
+                levelNumber: 5,
                 color: 'text-purple-400',
                 bgColor: 'from-purple-400/20 to-violet-400/20',
-                borderColor: 'border-purple-300/30'
+                borderColor: 'border-purple-300/30',
+                progressColor: 'from-purple-400 to-violet-500',
+                icon: '💀',
+                description: 'Health warnings of emergency conditions'
             }
         }
     }
@@ -124,9 +157,9 @@ function AirQualityCard({ weatherData }) {
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
         >
-            {/* Floating green particles */}
+            {/* Dynamic floating particles based on AQI level */}
             <motion.div
-                className="absolute top-3 right-3 w-4 h-4 bg-green-400/40 rounded-full blur-sm"
+                className={`absolute top-3 right-3 w-4 h-4 ${aqiInfo.levelNumber === 1 ? 'bg-green-400/40' : aqiInfo.levelNumber === 2 ? 'bg-yellow-400/40' : aqiInfo.levelNumber === 3 ? 'bg-orange-400/40' : aqiInfo.levelNumber === 4 ? 'bg-red-400/40' : 'bg-purple-400/40'} rounded-full blur-sm`}
                 animate={{
                     scale: [1, 1.5, 1],
                     opacity: [0.4, 0.8, 0.4],
@@ -140,7 +173,7 @@ function AirQualityCard({ weatherData }) {
                 }}
             />
             <motion.div
-                className="absolute bottom-4 left-4 w-3 h-3 bg-emerald-400/30 rounded-full blur-sm"
+                className={`absolute bottom-4 left-4 w-3 h-3 ${aqiInfo.levelNumber === 1 ? 'bg-emerald-400/30' : aqiInfo.levelNumber === 2 ? 'bg-yellow-400/30' : aqiInfo.levelNumber === 3 ? 'bg-orange-400/30' : aqiInfo.levelNumber === 4 ? 'bg-red-400/30' : 'bg-purple-400/30'} rounded-full blur-sm`}
                 animate={{
                     scale: [1.2, 1, 1.2],
                     opacity: [0.3, 0.7, 0.3],
@@ -166,41 +199,67 @@ function AirQualityCard({ weatherData }) {
                     className='flex gap-6 items-center justify-between'
                     variants={itemVariants}
                 >
-                    <div className="space-y-2">
-                        <motion.p
-                            className={`font-bold ${aqiInfo.color} text-4xl`}
-                            variants={numberVariants}
-                            whileHover={{
-                                scale: 1.1,
-                                textShadow: "0 0 20px rgba(34, 197, 94, 0.6)"
-                            }}
-                        >
-                            {aqiInfo.value}
-                        </motion.p>
+                    <div className="space-y-3">
+                        {/* AQI Value and Level */}
+                        <div className="flex items-center gap-4">
+                            <motion.p
+                                className={`font-bold ${aqiInfo.color} text-4xl`}
+                                variants={numberVariants}
+                                whileHover={{
+                                    scale: 1.1,
+                                    textShadow: `0 0 20px ${aqiInfo.color.replace('text-', 'rgba(').replace('-400', ', 0.6)')}`
+                                }}
+                            >
+                                {aqiInfo.value}
+                            </motion.p>
+                            
+                            {/* Level Badge */}
+                            <motion.div
+                                className={`px-3 py-1 rounded-full ${aqiInfo.bgColor} border ${aqiInfo.borderColor}`}
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
+                            >
+                                <span className={`${aqiInfo.color} font-bold text-sm`}>
+                                    Level {aqiInfo.levelNumber}
+                                </span>
+                            </motion.div>
+                        </div>
+
+                        {/* Level Name and Description */}
                         <motion.div
-                            className="relative"
+                            className="space-y-2"
                             variants={itemVariants}
                         >
-                            <motion.p
-                                className={`${aqiInfo.color.replace('400', '300')} font-semibold text-lg`}
+                            {/* <motion.p
+                                className={`${aqiInfo.color.replace('400', '300')} font-bold text-xl`}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.8, duration: 0.5 }}
                             >
-                                {aqiInfo.level}
+                                {aqiInfo.icon} {aqiInfo.level} "hello world"
+                            </motion.p> */}
+                            
+                            <motion.p
+                                className="text-white/70 text-sm"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 1, duration: 0.5 }}
+                            >
+                                {aqiInfo.description}
                             </motion.p>
 
-                            {/* Animated progress bar */}
+                            {/* Dynamic Progress Bar */}
                             <motion.div
-                                className="w-16 h-1 bg-white/20 rounded-full mt-2 overflow-hidden"
+                                className="w-full h-2 bg-white/20 rounded-full mt-3 overflow-hidden"
                                 initial={{ scaleX: 0 }}
                                 animate={{ scaleX: 1 }}
                                 transition={{ delay: 1, duration: 0.8 }}
                             >
                                 <motion.div
-                                    className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full"
+                                    className={`h-full bg-gradient-to-r ${aqiInfo.progressColor} rounded-full`}
                                     initial={{ width: 0 }}
-                                    animate={{ width: "42%" }}
+                                    animate={{ width: `${(aqiInfo.levelNumber / 5) * 100}%` }}
                                     transition={{
                                         delay: 1.2,
                                         duration: 1.5,
@@ -215,11 +274,9 @@ function AirQualityCard({ weatherData }) {
                         className="relative"
                         variants={leafVariants}
                     >
-                        <motion.img
-                            src="./icons/leave.png"
-                            alt="leaf"
-                            className="w-16 h-16 drop-shadow-lg"
-                            loading="lazy"
+                        {/* Dynamic Icon based on AQI Level */}
+                        <motion.div
+                            className="w-16 h-16 flex items-center justify-center text-4xl"
                             animate={{
                                 rotate: [0, 5, -5, 0],
                                 y: [0, -3, 0]
@@ -231,14 +288,15 @@ function AirQualityCard({ weatherData }) {
                             }}
                             whileHover={{
                                 scale: 1.2,
-                                rotate: 15,
-                                filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.5))"
+                                rotate: 15
                             }}
-                        />
+                        >
+                            {aqiInfo.icon}
+                        </motion.div>
 
-                        {/* Glowing ring around the leaf */}
+                        {/* Dynamic glowing ring based on AQI level */}
                         <motion.div
-                            className="absolute inset-0 rounded-full border-2 border-green-400/30"
+                            className={`absolute inset-0 rounded-full border-2 ${aqiInfo.levelNumber === 1 ? 'border-green-400/30' : aqiInfo.levelNumber === 2 ? 'border-yellow-400/30' : aqiInfo.levelNumber === 3 ? 'border-orange-400/30' : aqiInfo.levelNumber === 4 ? 'border-red-400/30' : 'border-purple-400/30'}`}
                             animate={{
                                 scale: [1, 1.3, 1],
                                 opacity: [0, 0.6, 0]
